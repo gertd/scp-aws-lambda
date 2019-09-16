@@ -1,0 +1,10 @@
+EventSourceType: # AWS source type
+  base: int
+  marshal: false
+  bitmask: false
+  caaseinsensitive: true
+  items: 
+    - unknown
+    - SQS # Simple Queue Service
+    - SNS # Simple Notification Service
+    - Kinesis # Kinesis Data Streams
