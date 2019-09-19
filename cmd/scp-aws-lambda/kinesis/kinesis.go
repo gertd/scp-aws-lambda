@@ -4,17 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/gertd/go-scp/scp"
+
 	"github.com/gertd/scp-aws-lambda/pkg/config"
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 )
 
 // Handler --
 func Handler(cfg *config.Config) func(ctx context.Context, kinesisEvent events.KinesisEvent) (err error) {
-
-	clnt := scp.NewClient(cfg.Tenant, cfg.ClientID, cfg.ClientSecret)
 
 	return func(ctx context.Context, kinesisEvent events.KinesisEvent) (err error) {
 
@@ -29,15 +28,22 @@ func Handler(cfg *config.Config) func(ctx context.Context, kinesisEvent events.K
 				return err
 			}
 
+			ts := time.Now().UTC().Unix() * 1000
+			ns := int32(0)
+
 			event := ingest.Event{
 				Body:       body,
 				Host:       &cfg.Host,
 				Source:     &cfg.Source,
 				Sourcetype: &cfg.SourceType,
+				Timestamp:  &ts,
+				Nanos:      &ns,
 			}
 
-			if err := clnt.IngestEvent(&event); err != nil {
-				return err
+			select {
+			case cfg.Events <- event:
+			case <-ctx.Done():
+				return
 			}
 
 			log.Printf("ingested kinesis seq# [%s]", record.Kinesis.SequenceNumber)

@@ -3,6 +3,8 @@
 //
 package config
 
+import ()
+
 // EventSourceType -- enum type
 type EventSourceType int
 

@@ -3,9 +3,9 @@ package sns
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/gertd/go-scp/scp"
 	"github.com/gertd/scp-aws-lambda/pkg/config"
 	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 )
@@ -13,13 +13,14 @@ import (
 // Handler --
 func Handler(cfg *config.Config) func(ctx context.Context, snsEvent events.SNSEvent) (err error) {
 
-	clnt := scp.NewClient(cfg.Tenant, cfg.ClientID, cfg.ClientSecret)
-
 	return func(ctx context.Context, snsEvent events.SNSEvent) (err error) {
 
 		for _, record := range snsEvent.Records {
 
 			snsRecord := record.SNS
+
+			ts := time.Now().UTC().Unix() * 1000
+			ns := int32(0)
 
 			event := ingest.Event{
 				Body:       &snsRecord.Message,
@@ -27,10 +28,14 @@ func Handler(cfg *config.Config) func(ctx context.Context, snsEvent events.SNSEv
 				Host:       &cfg.Host,
 				Source:     &cfg.Source,
 				Sourcetype: &cfg.SourceType,
+				Timestamp:  &ts,
+				Nanos:      &ns,
 			}
 
-			if err := clnt.IngestEvent(&event); err != nil {
-				return err
+			select {
+			case cfg.Events <- event:
+			case <-ctx.Done():
+				return
 			}
 
 			log.Printf("ingested sns msgid# [%s]", snsRecord.MessageID)

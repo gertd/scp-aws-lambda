@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"os"
+
+	"github.com/splunk/splunk-cloud-sdk-go/services/ingest"
 )
 
 const (
@@ -13,7 +15,7 @@ const (
 	// EnvClientID -- client id environment variable
 	EnvClientID = "SCP_CLIENT_ID"
 	// EnvClientSecret -- client secret environment variable
-	EnvClientSecret = "SCP_CLIENT_SECRET"
+	EnvClientSecret = "SCP_CLIENT_SECRET" //nolint:gosec
 	// EnvHost -- event host environment variable
 	EnvHost = "SCP_EVENT_HOST"
 	// EnvSource -- event source environment variable
@@ -35,6 +37,7 @@ type Config struct {
 	Host         string
 	Source       string
 	SourceType   string
+	Events       chan ingest.Event
 }
 
 // NewConfigFromEnv --
@@ -47,6 +50,7 @@ func NewConfigFromEnv() *Config {
 		Host:         os.Getenv(EnvHost),
 		Source:       os.Getenv(EnvSource),
 		SourceType:   os.Getenv(EnvSourceType),
+		Events:       make(chan ingest.Event),
 	}
 }
 

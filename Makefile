@@ -1,5 +1,6 @@
-## BOF define block
+SHELL 	   := $(shell which bash)
 
+## BOF define block
 PROJECT    := scp-aws-lambda
 BINARY     := scp-aws-lambda
 
@@ -8,14 +9,14 @@ BIN_DIR    := $(ROOT_DIR)/bin
 REL_DIR    := $(ROOT_DIR)/release
 SRC_DIR    := $(ROOT_DIR)/cmd/scp-aws-lambda
 
-VERSION    :=`git describe --tags --dirty 2>/dev/null`
+VERSION    :=`git describe --tags 2>/dev/null`
 COMMIT     :=`git rev-parse --short HEAD 2>/dev/null`
 DATE       :=`date "+%FT%T%z"`
 
 LDBASE     := github.com/gertd/$(PROJECT)
 LDFLAGS    := -ldflags "-w -s -X $(LDBASE)/cmd.version=${VERSION} -X $(LDBASE)/cmd.date=${DATE} -X $(LDBASE)/cmd.commit=${COMMIT}"
 
-PLATFORMS  := linux
+PLATFORMS  := linux darwin
 OS         = $(word 1, $@)
 
 GOARCH     ?= amd64
@@ -54,7 +55,7 @@ deps:
 .PHONY: build
 build: deps 
 	@echo -e "$(ATTN_COLOR)==> build GOOS=$(GOOS) GOARCH=$(GOARCH) VERSION=$(VERSION) COMMIT=$(COMMIT) DATE=$(DATE) $(NO_COLOR)"
-	@GOOS=$(GOOS) GOARCH=$(GOARCH) GO111MODULE=on go build $(LDFLAGS) -o $(BIN_DIR)/$(BINARY) $(SRC_DIR)
+	@GOOS=$(GOOS) GOARCH=$(GOARCH) GO111MODULE=on go build $(LDFLAGS) -v -o $(BIN_DIR)/$(BINARY)-$(GOOS)-$(GOARCH) $(SRC_DIR)
 
 $(TESTRUNNER):
 	@echo -e "$(ATTN_COLOR)==> get gotestsum test runner  $(NO_COLOR)"
@@ -77,9 +78,15 @@ lint: $(LINTER)
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):
-	@echo -e "$(ATTN_COLOR)==> release GOOS=$(OS) GOARCH=$(GOARCH) $(REL_DIR)/$(BINARY)-$(OS)-$(GOARCH) $(NO_COLOR)"
 	@mkdir -p $(REL_DIR)
-	@GOOS=$(OS) GOARCH=$(GOARCH) GO111MODULE=on go build $(LDFLAGS) -o $(REL_DIR)/$(BINARY)-$(OS)-$(GOARCH)$(if $(findstring $(OS),windows),".exe","") $(SRC_DIR)
+	
+	@echo -e "$(ATTN_COLOR)==> release to $(REL_DIR) $(NO_COLOR)"
+
+	@echo -e "$(ATTN_COLOR)==> build GOOS=$(@:release-%=%) GOARCH=$(GOARCH) VERSION=$(VERSION) COMMIT=$(COMMIT) DATE=$(DATE) $(NO_COLOR)"
+	@GOOS=$(@:release-%=%) GOARCH=$(GOARCH) GO111MODULE=on go build $(LDFLAGS) -v -o $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(GOARCH) $(SRC_DIR)
+
+	@echo -e "$(ATTN_COLOR)==> zip $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(VERSION).zip $(NO_COLOR)"
+	@zip -j $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(VERSION).zip $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(GOARCH) >/dev/null
 
 .PHONY: release
 release: $(PLATFORMS)
