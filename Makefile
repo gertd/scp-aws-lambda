@@ -103,10 +103,6 @@ clean:
 	@rm -rf $(REL_DIR)
 
 .PHONY: gen
-<<<<<<< HEAD
-gen: deps
-=======
 gen:
->>>>>>> master
 	@echo -e "$(ATTN_COLOR)==> generate $(NO_COLOR)"
 	@go generate ./...
