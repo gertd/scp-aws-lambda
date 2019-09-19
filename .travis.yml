@@ -1,0 +1,31 @@
+language: go
+go:
+- 1.12.9
+cache:
+  directories:
+  - "$HOME/local"
+script:
+- make
+before_install: 
+install: 
+before_deploy:
+- make VERSION=${TRAVIS_TAG} release -j3
+- ls release/
+deploy:
+  provider: releases
+  api_key:
+    secure: Aaa+vnXc4L3GLnk5WhSMho9X5EUm9St87U300ahx8Gn4YrOMWqbeR+InvM8mn5Pp18HLTZkNj9J41/kIwTyt6BwX6YdIqJ2zdETHR3bOGNoGq+Kob0DOtq5FG/OfQu0skE4XVUYbtoIiHrc+0D93o5LK74hfS1f8sEqEh9Io36fxHqmsPmSbBCwpSNK+YgrnC1wcDlYyw/orppZXTGcLG2+3fttudaEs8h39YW8jZ8Q3USdOt5OGXNmb0jCq/Iovp2mnPYc7NTwD8R5gBeDH/QS1ilETjM6PsQngKYbGcNqDQ/Hgxe5inRu+6SoiFJZj5rDbMszwJRxYiZRcN7qOHkbR5LRb6cR/pkGeVHBTNzOkQwZxM2Putkg4PMNh47qJIZPjU9SIbq1vaDtKTirE6FmMhvIROQTYcUtAQ3To70xiPuYzEriaphcyEm1qjTtBHZnpCYERkl3NtsXo5DFA2shp2kbnFJCuIK1QxbZ1KAdBhimPiIeSt8mng4CEIXdBTtJgx/NLwftihROZ+liK/ZRk5ORNAl2f7y6S3zQsVf2X12O9wUlIYEKpEiJlcthYx13wGPFNS1J10pai4E9bUlNMYEP/Z6y1Jcoa+CpCA4qrmuLRdUu3vCvGyi6k/cmuGlJsoNOh686KZvBhwe8DnMLpJXy8+Er9p6gCkjrxww4=
+  file_glob: true
+  file: release/*
+  on:
+    tags: true
+    repo: gertd/scp-aws-lambda
+    branches:
+      only:
+        - master
+notifications:
+  email: false
+env:
+  global:
+  - PATH=$PATH:$HOME/local/bin
+  - GO111MODULE=on
