@@ -16,7 +16,11 @@ DATE       :=`date "+%FT%T%z"`
 LDBASE     := github.com/gertd/$(PROJECT)
 LDFLAGS    := -ldflags "-w -s -X $(LDBASE)/cmd.version=${VERSION} -X $(LDBASE)/cmd.date=${DATE} -X $(LDBASE)/cmd.commit=${COMMIT}"
 
+<<<<<<< HEAD
 PLATFORMS  := linux darwin
+=======
+PLATFORMS  := linux
+>>>>>>> master
 OS         = $(word 1, $@)
 
 GOARCH     ?= amd64
@@ -103,6 +107,10 @@ clean:
 	@rm -rf $(REL_DIR)
 
 .PHONY: gen
+<<<<<<< HEAD
 gen: deps
+=======
+gen:
+>>>>>>> master
 	@echo -e "$(ATTN_COLOR)==> generate $(NO_COLOR)"
 	@go generate ./...
