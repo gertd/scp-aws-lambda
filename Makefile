@@ -82,7 +82,7 @@ $(PLATFORMS):
 	
 	@echo -e "$(ATTN_COLOR)==> release to $(REL_DIR) $(NO_COLOR)"
 
-	@echo -e "$(ATTN_COLOR)==> build GOOS=$(@:release-%=%) GOARCH=$(GOARCH) VERSION=$(VERSION) COMMIT=$(COMMIT) DATE=$(DATE) $(NO_COLOR)"
+ 	@echo -e "$(ATTN_COLOR)==> build GOOS=$(@:release-%=%) GOARCH=$(GOARCH) VERSION=$(VERSION) COMMIT=$(COMMIT) DATE=$(DATE) $(NO_COLOR)"
 	@GOOS=$(@:release-%=%) GOARCH=$(GOARCH) GO111MODULE=on go build $(LDFLAGS) -v -o $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(GOARCH) $(SRC_DIR)
 
 	@echo -e "$(ATTN_COLOR)==> zip $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(VERSION).zip $(NO_COLOR)"
