@@ -23,6 +23,7 @@ deploy:
     branches:
       only:
         - master
+    skip_cleanup: true
 notifications:
   email: false
 env:
