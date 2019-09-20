@@ -86,7 +86,7 @@ $(PLATFORMS):
 	@GOOS=$(@:release-%=%) GOARCH=$(GOARCH) GO111MODULE=on go build $(LDFLAGS) -v -o $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(GOARCH) $(SRC_DIR)
 
 	@echo -e "$(ATTN_COLOR)==> zip $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(VERSION).zip $(NO_COLOR)"
-	@echo zip -j $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(VERSION).zip $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(GOARCH) >/dev/null
+	@zip -j $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(VERSION).zip $(REL_DIR)/$(BINARY)-$(@:release-%=%)-$(GOARCH) >/dev/null
 
 .PHONY: release
 release: $(PLATFORMS)
