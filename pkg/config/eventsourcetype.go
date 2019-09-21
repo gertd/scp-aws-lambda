@@ -3,6 +3,10 @@
 //
 package config
 
+import (
+	"strings"
+)
+
 // EventSourceType -- enum type
 type EventSourceType int
 
@@ -32,15 +36,15 @@ var eventSourceTypeID = map[EventSourceType]string{
 
 // EventSourceTypeName -- map string to enum constant
 var eventSourceTypeName = map[string]EventSourceType{
-	eventSourceTypeUnknown: EventSourceTypeUnknown,
-	eventSourceTypeSQS:     EventSourceTypeSQS,
-	eventSourceTypeSNS:     EventSourceTypeSNS,
-	eventSourceTypeKinesis: EventSourceTypeKinesis,
+	strings.ToLower(eventSourceTypeUnknown): EventSourceTypeUnknown,
+	strings.ToLower(eventSourceTypeSQS):     EventSourceTypeSQS,
+	strings.ToLower(eventSourceTypeSNS):     EventSourceTypeSNS,
+	strings.ToLower(eventSourceTypeKinesis): EventSourceTypeKinesis,
 }
 
 // NewEventSourceType -- Create EventSourceType instance from string representation
 func NewEventSourceType(k string) EventSourceType {
-	if kind, ok := eventSourceTypeName[k]; ok {
+	if kind, ok := eventSourceTypeName[strings.ToLower(k)]; ok {
 		return kind
 	}
 	return EventSourceTypeUnknown

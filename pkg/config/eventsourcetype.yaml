@@ -2,7 +2,7 @@ EventSourceType: # AWS source type
   base: int
   marshal: false
   bitmask: false
-  caaseinsensitive: true
+  caseinsensitive: true
   items: 
     - unknown
     - SQS # Simple Queue Service

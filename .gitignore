@@ -13,3 +13,8 @@
 
 /bin
 /release
+/test
+
+# app registration (result of register.sh)
+appreg.json
+appreg.*.json
