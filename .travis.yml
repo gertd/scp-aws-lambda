@@ -15,9 +15,14 @@ deploy:
   provider: releases
   api_key:
     secure: CwTkzhtaZ/3g3fLttz8h1MlNVnkMCBi8jLaguWtdsoDylsn2eagE8Iw0kKCTid4Hop/cbsMvZ2mNJhgnJ+tqU8bSLNMAs4999FxmBPVdxL1L0v9enzrfBuyeY/4CCXo4sBroDTRidQSk6SS9+v3iLTXHQcI0mMOHNnD5quaHBq23QEUg3tieuFDEbLNGuUXP/C0hki6ZfX/JC/WXF7qDD2AzXwzs8/aq+t31Tguj1eLk0gA6D9fJpV/LSV+5+9eoLwNubFhQpJRXD8lyVCXe2VmWLk8+Nn6KXtsLVC6ZSSo4YHorYqfL6YdyeELSpSrOXE1LNqhSIcPiuzacf33KB92IiAK3PUP5lTztDtafgJ+X6KQFT1X9oqmS+oFgcUVG1mSTcQ3uvZjjs0jxD2HsvhBLbmWif4T/ssx9mJdlbktfQIlM/dqCaiHKhO3Fp0fgPgwcPcEDUSY946O+kx8jczumEhAGiqJ9JBRMSk6YKunw3YaAY2omDdSdIjsubWwnpTnKNi6DtdYd2jMFkynJN3lKLKiGXYjPW505zeNYcqhpTaVlVE1luCx59h94IQIeCFcOhCXtI0z0y5ybBj845khWeJhoRGfyT43VPuDXL/JBTWEtfzyZTjx5L0WbLCDSrqI4+DW/VoM8b/LRsckfpPGZOL3wA0E+TUmb3X8ra3M=
+  file_glob: true
   file: release/scp-aws-lambda-linux-v*.*.*.zip
   on:
+    tags: true
     repo: gertd/scp-aws-lambda
+    branches:
+      only:
+        - master    
 notifications:
   email: false
 env:
